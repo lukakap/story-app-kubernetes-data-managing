@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: story-app-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: story
+  template:
+    metadata:
+      labels:
+        app: story
+    spec:
+      containers:
+      - name: story-app
+        image: lukakap/kub-data-demo:1
+        env: 
+          - name: STORY_FOLDER
+            # value: 'story'
+            valueFrom:
+              configMapKeyRef: 
+                name: data-store-env
+                key: folder
+        volumeMounts: 
+            # /app is my working directory froom docker image
+          - mountPath: /app/story
+            name: story-volume
+      volumes:
+        - name: story-volume
+          # volume type:
+          # emptyDir: {}
+          # hostPath: 
+          #   # path in the host machine, where data should be saved (not container path as above). looks like bind mount
+          #   path: /data
+          #   type: DirectoryOrCreate
+          persistentVolumeClaim:
+            claimName: host-pvc

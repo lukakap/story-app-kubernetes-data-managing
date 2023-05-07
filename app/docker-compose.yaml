@@ -1,0 +1,10 @@
+version: "3"
+services:
+  stories-kubern:
+    build: .
+    volumes:
+      - stories:/app/story
+    ports:
+      - 8000:8000
+volumes:
+  stories:  
